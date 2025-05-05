@@ -1,21 +1,21 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Smile Store Promo</title>
   <style>
     body {
-      margin: 0;
       background-color: #0f0f0f;
       color: white;
       font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 40px;
-      min-height: 100vh;
     }
 
     h1 {
@@ -28,21 +28,10 @@
 
     button {
       outline: none;
-      box-shadow: none;
       -webkit-tap-highlight-color: transparent;
-      font-family: 'Inter', sans-serif;
     }
 
-    button:focus {
-      outline: none;
-      box-shadow: none;
-    }
-
-    button::-moz-focus-inner {
-      border: 0;
-    }
-
-    .generate-btn {
+    .primary-btn {
       width: 260px;
       padding: 16px;
       font-size: 16px;
@@ -56,39 +45,9 @@
       transition: all 0.2s ease;
     }
 
-    .generate-btn:active {
+    .primary-btn:active {
       transform: scale(0.97);
       background-color: #2a2a2a;
-    }
-
-    .promo-box, .message-box {
-      margin-bottom: 20px;
-      padding: 14px 20px;
-      border-radius: 16px;
-      font-size: 20px;
-      text-align: center;
-      background-color: transparent;
-      border: 1px solid white;
-      letter-spacing: 2px;
-    }
-
-    .message-box {
-      background-color: #f44336;
-      color: white;
-      font-size: 16px;
-      letter-spacing: normal;
-      max-width: 300px;
-    }
-
-    .copy-btn {
-      padding: 10px 20px;
-      font-size: 14px;
-      background-color: #3a3a3a;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      margin-top: 10px;
     }
 
     .secondary-btn {
@@ -102,6 +61,50 @@
       border-radius: 16px;
       cursor: pointer;
       margin-top: 16px;
+      transition: all 0.2s ease;
+    }
+
+    .secondary-btn:active {
+      transform: scale(0.97);
+      background-color: #1a1a1a;
+    }
+
+    .promo-box, .loading-box {
+      margin-bottom: 20px;
+      padding: 14px 20px;
+      border: 1px solid white;
+      border-radius: 16px;
+      font-size: 20px;
+      text-align: center;
+      background-color: transparent;
+      width: max-content;
+      letter-spacing: 2px;
+    }
+
+    .message {
+      background-color: #f44336;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+      max-width: 300px;
+    }
+
+    .copy-btn {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 14px;
+      background-color: #3a3a3a;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .copy-btn:active {
+      transform: scale(0.97);
     }
 
     .spinner {
@@ -138,84 +141,73 @@
 </head>
 <body>
   <h1>Smile Store<br />Promo Code</h1>
-  <button class="generate-btn" onclick="handleGenerate()">Generate Kode</button>
-
-  <div id="loadingBox" style="display:none" class="promo-box" style="display:flex;align-items:center">
-    <div class="spinner">
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-    </div>
-    Loading Please Wait
-  </div>
-
-  <div id="promoBox" class="promo-box" style="display:none"></div>
-
-  <div id="messageBox" class="message-box" style="display:none"></div>
-
-  <button class="secondary-btn" onclick="handleContact()" id="contactBtn">Hubungi Kami</button>
-  <button class="secondary-btn" onclick="handleBackToHome()">Back To Home</button>
+  <button class="primary-btn" id="generateBtn">Generate Kode</button>
+  <div id="statusArea"></div>
+  <button class="secondary-btn" id="contactBtn">Hubungi Kami</button>
+  <button class="secondary-btn" id="backBtn">Back To Home</button>
 
   <script>
-    let promoUsed = localStorage.getItem('promoUsed');
-    let promoCode = '';
-    const promoBox = document.getElementById('promoBox');
-    const messageBox = document.getElementById('messageBox');
-    const loadingBox = document.getElementById('loadingBox');
+    const generateBtn = document.getElementById('generateBtn');
+    const statusArea = document.getElementById('statusArea');
+    const contactBtn = document.getElementById('contactBtn');
+    const backBtn = document.getElementById('backBtn');
 
-    function handleGenerate() {
-      if (promoUsed) {
-        showMessage("Kamu sudah menggunakan promo code kamu");
+    generateBtn.addEventListener('click', async () => {
+      generateBtn.disabled = true;
+      statusArea.innerHTML = `
+        <div class="loading-box" style="display:flex; align-items:center;">
+          <div class="spinner">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+          Loading Please Wait
+        </div>
+      `;
+
+      const hasUsed = localStorage.getItem('promoUsed');
+      if (hasUsed) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        statusArea.innerHTML = `<div class="message">Kamu sudah menggunakan promo code kamu</div>`;
+        generateBtn.disabled = false;
         return;
       }
 
-      promoBox.style.display = "none";
-      messageBox.style.display = "none";
-      loadingBox.style.display = "flex";
+      try {
+        const res = await fetch('/api/generate-promo');
+        const data = await res.json();
+        generateBtn.disabled = false;
 
-      fetch('/api/generate-promo')
-        .then(res => res.json())
-        .then(data => {
-          loadingBox.style.display = "none";
-          if (data.code) {
-            promoCode = data.code;
-            promoBox.innerHTML = `
-              ${promoCode}
-              <div>
-                <button class="copy-btn" onclick="handleCopy()">Copy</button>
-              </div>
-            `;
-            promoBox.style.display = "block";
-            localStorage.setItem('promoUsed', 'true');
-            promoUsed = true;
-          } else {
-            showMessage(data.error || "Gagal membuat kode promo.");
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          loadingBox.style.display = "none";
-          showMessage("Terjadi kesalahan saat membuat promo code.");
-        });
+        if (data.code) {
+          localStorage.setItem('promoUsed', 'true');
+          statusArea.innerHTML = `
+            <div class="promo-box">
+              ${data.code}
+              <div><button class="copy-btn" onclick="copyCode('${data.code}')">Copy</button></div>
+            </div>
+          `;
+        } else {
+          statusArea.innerHTML = `<div class="message">${data.error || 'Gagal membuat kode promo.'}</div>`;
+        }
+      } catch (err) {
+        console.error(err);
+        statusArea.innerHTML = `<div class="message">Terjadi kesalahan saat membuat promo code.</div>`;
+        generateBtn.disabled = false;
+      }
+    });
+
+    function copyCode(code) {
+      navigator.clipboard.writeText(code);
+      alert('Kode berhasil disalin!');
     }
 
-    function handleCopy() {
-      navigator.clipboard.writeText(promoCode);
-      alert("Kode berhasil disalin!");
-    }
-
-    function handleContact() {
+    contactBtn.addEventListener('click', () => {
       window.open('https://wa.me/601160643471', '_blank');
-    }
+    });
 
-    function handleBackToHome() {
-      window.location.href = "/";
-    }
-
-    function showMessage(text) {
-      messageBox.textContent = text;
-      messageBox.style.display = "block";
-    }
+    backBtn.addEventListener('click', () => {
+      window.location.href = '/';
+    });
   </script>
 </body>
 </html>
