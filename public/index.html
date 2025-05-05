@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Promo Code - Smile Store</title>
+  <style>
+    body {
+      background-color: #0f0f0f;
+      min-height: 100vh;
+      padding: 40px;
+      color: white;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    h1 {
+      font-size: 36px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 50px;
+      line-height: 1.2;
+    }
+    button {
+      width: 260px;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 500;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    #generateBtn {
+      background-color: #1f1f1f;
+      color: white;
+      border: none;
+      margin-bottom: 20px;
+    }
+    #generateBtn.clicked {
+      background-color: #2a2a2a;
+      transform: scale(0.97);
+    }
+    #promoBox, #loadingBox, #messageBox {
+      margin-bottom: 20px;
+      padding: 14px 20px;
+      border: 1px solid white;
+      border-radius: 16px;
+      font-size: 20px;
+      text-align: center;
+      background-color: transparent;
+    }
+    #messageBox {
+      background-color: #f44336;
+      max-width: 300px;
+      font-size: 16px;
+    }
+    .copyBtn {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 14px;
+      background-color: #3a3a3a;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+    .spinner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+    }
+    .dot {
+      width: 6px;
+      height: 6px;
+      margin: 0 2px;
+      border-radius: 50%;
+      background: white;
+      animation: bounce 0.6s infinite alternate;
+    }
+    .dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    .dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    @keyframes bounce {
+      to {
+        opacity: 0.3;
+        transform: translateY(-5px);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Smile Store<br>Promo Code</h1>
+
+  <button id="generateBtn">Generate Kode</button>
+
+  <div id="loadingBox" style="display:none;">
+    <div class="spinner">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    Loading Please Wait
+  </div>
+
+  <div id="promoBox" style="display:none;"></div>
+
+  <div id="messageBox" style="display:none;"></div>
+
+  <button id="contactBtn" style="border:2px solid white; background-color:#0f0f0f; color:white; margin-top:20px;">
+    Hubungi Kami
+  </button>
+
+  <button id="homeBtn" style="border:2px solid white; background-color:#0f0f0f; color:white; margin-top:16px;">
+    Back To Home
+  </button>
+
+  <script>
+    const generateBtn = document.getElementById('generateBtn');
+    const promoBox = document.getElementById('promoBox');
+    const loadingBox = document.getElementById('loadingBox');
+    const messageBox = document.getElementById('messageBox');
+    const contactBtn = document.getElementById('contactBtn');
+    const homeBtn = document.getElementById('homeBtn');
+
+    let promoCode = '';
+
+    generateBtn.addEventListener('click', async () => {
+      generateBtn.classList.add('clicked');
+      setTimeout(() => generateBtn.classList.remove('clicked'), 200);
+
+      promoBox.style.display = 'none';
+      messageBox.style.display = 'none';
+      loadingBox.style.display = 'flex';
+
+      if (localStorage.getItem('promoUsed')) {
+        setTimeout(() => {
+          loadingBox.style.display = 'none';
+          messageBox.innerText = 'Kamu sudah menggunakan promo code kamu';
+          messageBox.style.display = 'block';
+        }, 1000);
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/generate-promo');
+        const data = await res.json();
+        loadingBox.style.display = 'none';
+
+        if (data.code) {
+          promoCode = data.code;
+          promoBox.innerHTML = `
+            ${promoCode}
+            <div><button class="copyBtn" onclick="copyCode()">Copy</button></div>
+          `;
+          promoBox.style.display = 'block';
+          localStorage.setItem('promoUsed', 'true');
+        } else {
+          messageBox.innerText = data.error || 'Gagal membuat kode promo.';
+          messageBox.style.display = 'block';
+        }
+      } catch (err) {
+        console.error(err);
+        loadingBox.style.display = 'none';
+        messageBox.innerText = 'Terjadi kesalahan saat membuat promo code.';
+        messageBox.style.display = 'block';
+      }
+    });
+
+    function copyCode() {
+      navigator.clipboard.writeText(promoCode);
+      alert('Kode berhasil disalin!');
+    }
+
+    contactBtn.addEventListener('click', () => {
+      window.open('https://wa.me/601160643471', '_blank');
+    });
+
+    homeBtn.addEventListener('click', () => {
+      window.location.href = '/';
+    });
+  </script>
+</body>
+</html>
