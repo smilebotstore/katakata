@@ -1,78 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Smile Store Promo Code</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
-      body {
-        background-color: #0f0f0f;
-        min-height: 100vh;
-        padding: 40px;
-        color: white;
-        font-family: Inter, sans-serif;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      }
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smile Store Promo</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #0f0f0f;
+      color: white;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      min-height: 100vh;
+    }
 
-      h1 {
-        font-size: 36px;
-        font-weight: bold;
-        text-align: center;
-        margin-bottom: 50px;
-        line-height: 1.2;
-      }
+    h1 {
+      font-size: 36px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 50px;
+      line-height: 1.2;
+    }
 
-      button {
-        outline: none !important;
-        box-shadow: none !important;
-        font-family: inherit;
-      }
+    button {
+      outline: none;
+      box-shadow: none;
+      -webkit-tap-highlight-color: transparent;
+      font-family: 'Inter', sans-serif;
+    }
 
-      button:focus,
-      button:active {
-        outline: none !important;
-        box-shadow: none !important;
-      }
+    button:focus {
+      outline: none;
+      box-shadow: none;
+    }
 
-      .spinner {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 10px;
-      }
+    button::-moz-focus-inner {
+      border: 0;
+    }
 
-      .dot {
-        width: 6px;
-        height: 6px;
-        margin: 0 2px;
-        border-radius: 50%;
-        background: white;
-        animation: bounce 0.6s infinite alternate;
-      }
-
-      .dot:nth-child(2) {
-        animation-delay: 0.2s;
-      }
-
-      .dot:nth-child(3) {
-        animation-delay: 0.4s;
-      }
-
-      @keyframes bounce {
-        to {
-          opacity: 0.3;
-          transform: translateY(-5px);
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Smile Store<br />Promo Code</h1>
-
-    <button id="generateBtn" style="
+    .generate-btn {
       width: 260px;
       padding: 16px;
       font-size: 16px;
@@ -84,28 +54,44 @@
       margin-bottom: 20px;
       cursor: pointer;
       transition: all 0.2s ease;
-    ">
-      Generate Kode
-    </button>
+    }
 
-    <div id="outputArea"></div>
+    .generate-btn:active {
+      transform: scale(0.97);
+      background-color: #2a2a2a;
+    }
 
-    <button onclick="handleContact()" style="
-      width: 260px;
-      padding: 16px;
-      font-size: 16px;
-      font-weight: 500;
-      background-color: #0f0f0f;
-      color: white;
-      border: 2px solid white;
+    .promo-box, .message-box {
+      margin-bottom: 20px;
+      padding: 14px 20px;
       border-radius: 16px;
-      cursor: pointer;
-      margin-top: 20px;
-    ">
-      Hubungi Kami
-    </button>
+      font-size: 20px;
+      text-align: center;
+      background-color: transparent;
+      border: 1px solid white;
+      letter-spacing: 2px;
+    }
 
-    <button onclick="handleBackToHome()" style="
+    .message-box {
+      background-color: #f44336;
+      color: white;
+      font-size: 16px;
+      letter-spacing: normal;
+      max-width: 300px;
+    }
+
+    .copy-btn {
+      padding: 10px 20px;
+      font-size: 14px;
+      background-color: #3a3a3a;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .secondary-btn {
       width: 260px;
       padding: 16px;
       font-size: 16px;
@@ -116,86 +102,120 @@
       border-radius: 16px;
       cursor: pointer;
       margin-top: 16px;
-    ">
-      Back To Home
-    </button>
+    }
 
-    <script>
-      const btn = document.getElementById('generateBtn');
-      const output = document.getElementById('outputArea');
+    .spinner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+    }
 
-      btn.addEventListener('click', async () => {
-        btn.style.transform = 'scale(0.97)';
-        setTimeout(() => (btn.style.transform = 'scale(1)'), 150);
+    .dot {
+      width: 6px;
+      height: 6px;
+      margin: 0 2px;
+      border-radius: 50%;
+      background: white;
+      animation: bounce 0.6s infinite alternate;
+    }
 
-        output.innerHTML = '';
-        const hasUsed = localStorage.getItem('promoUsed');
+    .dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
 
-        if (hasUsed) {
-          output.innerHTML = `
-            <div style="background-color: #f44336; color: white; padding: 10px 20px; border-radius: 8px; margin-bottom: 20px; text-align: center; max-width: 300px">
-              Kamu sudah menggunakan promo code kamu
-            </div>
-          `;
-          return;
-        }
+    .dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
 
-        output.innerHTML = `
-          <div style="margin-bottom: 20px; padding: 14px 20px; border: 1px solid white; border-radius: 16px; font-size: 18px; text-align: center; background-color: transparent; display: flex; align-items: center;">
-            <div class="spinner">
-              <div class="dot"></div>
-              <div class="dot"></div>
-              <div class="dot"></div>
-            </div>
-            Loading Please Wait
-          </div>
-        `;
+    @keyframes bounce {
+      to {
+        opacity: 0.3;
+        transform: translateY(-5px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Smile Store<br />Promo Code</h1>
+  <button class="generate-btn" onclick="handleGenerate()">Generate Kode</button>
 
-        try {
-          const res = await fetch('/api/generate-promo');
-          const data = await res.json();
+  <div id="loadingBox" style="display:none" class="promo-box" style="display:flex;align-items:center">
+    <div class="spinner">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    Loading Please Wait
+  </div>
 
+  <div id="promoBox" class="promo-box" style="display:none"></div>
+
+  <div id="messageBox" class="message-box" style="display:none"></div>
+
+  <button class="secondary-btn" onclick="handleContact()" id="contactBtn">Hubungi Kami</button>
+  <button class="secondary-btn" onclick="handleBackToHome()">Back To Home</button>
+
+  <script>
+    let promoUsed = localStorage.getItem('promoUsed');
+    let promoCode = '';
+    const promoBox = document.getElementById('promoBox');
+    const messageBox = document.getElementById('messageBox');
+    const loadingBox = document.getElementById('loadingBox');
+
+    function handleGenerate() {
+      if (promoUsed) {
+        showMessage("Kamu sudah menggunakan promo code kamu");
+        return;
+      }
+
+      promoBox.style.display = "none";
+      messageBox.style.display = "none";
+      loadingBox.style.display = "flex";
+
+      fetch('/api/generate-promo')
+        .then(res => res.json())
+        .then(data => {
+          loadingBox.style.display = "none";
           if (data.code) {
+            promoCode = data.code;
+            promoBox.innerHTML = `
+              ${promoCode}
+              <div>
+                <button class="copy-btn" onclick="handleCopy()">Copy</button>
+              </div>
+            `;
+            promoBox.style.display = "block";
             localStorage.setItem('promoUsed', 'true');
-            output.innerHTML = `
-              <div style="margin-bottom: 20px; padding: 14px 20px; border: 1px solid white; border-radius: 16px; font-size: 20px; letter-spacing: 2px; text-align: center; width: max-content; background-color: transparent;">
-                ${data.code}
-                <div style="margin-top: 10px;">
-                  <button onclick="copyCode('${data.code}')" style="padding: 10px 20px; font-size: 14px; background-color: #3a3a3a; color: white; border: none; border-radius: 12px; cursor: pointer;">
-                    Copy
-                  </button>
-                </div>
-              </div>
-            `;
+            promoUsed = true;
           } else {
-            output.innerHTML = `
-              <div style="background-color: #f44336; color: white; padding: 10px 20px; border-radius: 8px; margin-bottom: 20px; text-align: center; max-width: 300px">
-                ${data.error || 'Gagal membuat kode promo.'}
-              </div>
-            `;
+            showMessage(data.error || "Gagal membuat kode promo.");
           }
-        } catch (e) {
-          console.error(e);
-          output.innerHTML = `
-            <div style="background-color: #f44336; color: white; padding: 10px 20px; border-radius: 8px; margin-bottom: 20px; text-align: center; max-width: 300px">
-              Terjadi kesalahan saat membuat promo code.
-            </div>
-          `;
-        }
-      });
+        })
+        .catch(err => {
+          console.error(err);
+          loadingBox.style.display = "none";
+          showMessage("Terjadi kesalahan saat membuat promo code.");
+        });
+    }
 
-      function copyCode(code) {
-        navigator.clipboard.writeText(code);
-        alert('Kode berhasil disalin!');
-      }
+    function handleCopy() {
+      navigator.clipboard.writeText(promoCode);
+      alert("Kode berhasil disalin!");
+    }
 
-      function handleContact() {
-        window.open('https://wa.me/601160643471', '_blank');
-      }
+    function handleContact() {
+      window.open('https://wa.me/601160643471', '_blank');
+    }
 
-      function handleBackToHome() {
-        window.location.href = '/';
-      }
-    </script>
-  </body>
+    function handleBackToHome() {
+      window.location.href = "/";
+    }
+
+    function showMessage(text) {
+      messageBox.textContent = text;
+      messageBox.style.display = "block";
+    }
+  </script>
+</body>
 </html>
