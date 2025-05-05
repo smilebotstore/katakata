@@ -1,190 +1,201 @@
 <!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Promo Code - Smile Store</title>
-  <style>
-    body {
-      background-color: #0f0f0f;
-      min-height: 100vh;
-      padding: 40px;
-      color: white;
-      font-family: 'Inter', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    h1 {
-      font-size: 36px;
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 50px;
-      line-height: 1.2;
-    }
-    button {
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Smile Store Promo Code</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        background-color: #0f0f0f;
+        min-height: 100vh;
+        padding: 40px;
+        color: white;
+        font-family: Inter, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      h1 {
+        font-size: 36px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 50px;
+        line-height: 1.2;
+      }
+
+      button {
+        outline: none !important;
+        box-shadow: none !important;
+        font-family: inherit;
+      }
+
+      button:focus,
+      button:active {
+        outline: none !important;
+        box-shadow: none !important;
+      }
+
+      .spinner {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+      }
+
+      .dot {
+        width: 6px;
+        height: 6px;
+        margin: 0 2px;
+        border-radius: 50%;
+        background: white;
+        animation: bounce 0.6s infinite alternate;
+      }
+
+      .dot:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      .dot:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes bounce {
+        to {
+          opacity: 0.3;
+          transform: translateY(-5px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Smile Store<br />Promo Code</h1>
+
+    <button id="generateBtn" style="
       width: 260px;
       padding: 16px;
       font-size: 16px;
       font-weight: 500;
-      border-radius: 16px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    #generateBtn {
       background-color: #1f1f1f;
       color: white;
       border: none;
-      margin-bottom: 20px;
-    }
-    #generateBtn.clicked {
-      background-color: #2a2a2a;
-      transform: scale(0.97);
-    }
-    #promoBox, #loadingBox, #messageBox {
-      margin-bottom: 20px;
-      padding: 14px 20px;
-      border: 1px solid white;
       border-radius: 16px;
-      font-size: 20px;
-      text-align: center;
-      background-color: transparent;
-    }
-    #messageBox {
-      background-color: #f44336;
-      max-width: 300px;
-      font-size: 16px;
-    }
-    .copyBtn {
-      margin-top: 10px;
-      padding: 10px 20px;
-      font-size: 14px;
-      background-color: #3a3a3a;
-      color: white;
-      border: none;
-      border-radius: 12px;
+      margin-bottom: 20px;
       cursor: pointer;
-    }
-    .spinner {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 10px;
-    }
-    .dot {
-      width: 6px;
-      height: 6px;
-      margin: 0 2px;
-      border-radius: 50%;
-      background: white;
-      animation: bounce 0.6s infinite alternate;
-    }
-    .dot:nth-child(2) {
-      animation-delay: 0.2s;
-    }
-    .dot:nth-child(3) {
-      animation-delay: 0.4s;
-    }
-    @keyframes bounce {
-      to {
-        opacity: 0.3;
-        transform: translateY(-5px);
-      }
-    }
-  </style>
-</head>
-<body>
+      transition: all 0.2s ease;
+    ">
+      Generate Kode
+    </button>
 
-  <h1>Smile Store<br>Promo Code</h1>
+    <div id="outputArea"></div>
 
-  <button id="generateBtn">Generate Kode</button>
+    <button onclick="handleContact()" style="
+      width: 260px;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 500;
+      background-color: #0f0f0f;
+      color: white;
+      border: 2px solid white;
+      border-radius: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    ">
+      Hubungi Kami
+    </button>
 
-  <div id="loadingBox" style="display:none;">
-    <div class="spinner">
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-    </div>
-    Loading Please Wait
-  </div>
+    <button onclick="handleBackToHome()" style="
+      width: 260px;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 500;
+      background-color: #0f0f0f;
+      color: white;
+      border: 2px solid white;
+      border-radius: 16px;
+      cursor: pointer;
+      margin-top: 16px;
+    ">
+      Back To Home
+    </button>
 
-  <div id="promoBox" style="display:none;"></div>
+    <script>
+      const btn = document.getElementById('generateBtn');
+      const output = document.getElementById('outputArea');
 
-  <div id="messageBox" style="display:none;"></div>
+      btn.addEventListener('click', async () => {
+        btn.style.transform = 'scale(0.97)';
+        setTimeout(() => (btn.style.transform = 'scale(1)'), 150);
 
-  <button id="contactBtn" style="border:2px solid white; background-color:#0f0f0f; color:white; margin-top:20px;">
-    Hubungi Kami
-  </button>
+        output.innerHTML = '';
+        const hasUsed = localStorage.getItem('promoUsed');
 
-  <button id="homeBtn" style="border:2px solid white; background-color:#0f0f0f; color:white; margin-top:16px;">
-    Back To Home
-  </button>
-
-  <script>
-    const generateBtn = document.getElementById('generateBtn');
-    const promoBox = document.getElementById('promoBox');
-    const loadingBox = document.getElementById('loadingBox');
-    const messageBox = document.getElementById('messageBox');
-    const contactBtn = document.getElementById('contactBtn');
-    const homeBtn = document.getElementById('homeBtn');
-
-    let promoCode = '';
-
-    generateBtn.addEventListener('click', async () => {
-      generateBtn.classList.add('clicked');
-      setTimeout(() => generateBtn.classList.remove('clicked'), 200);
-
-      promoBox.style.display = 'none';
-      messageBox.style.display = 'none';
-      loadingBox.style.display = 'flex';
-
-      if (localStorage.getItem('promoUsed')) {
-        setTimeout(() => {
-          loadingBox.style.display = 'none';
-          messageBox.innerText = 'Kamu sudah menggunakan promo code kamu';
-          messageBox.style.display = 'block';
-        }, 1000);
-        return;
-      }
-
-      try {
-        const res = await fetch('/api/generate-promo');
-        const data = await res.json();
-        loadingBox.style.display = 'none';
-
-        if (data.code) {
-          promoCode = data.code;
-          promoBox.innerHTML = `
-            ${promoCode}
-            <div><button class="copyBtn" onclick="copyCode()">Copy</button></div>
+        if (hasUsed) {
+          output.innerHTML = `
+            <div style="background-color: #f44336; color: white; padding: 10px 20px; border-radius: 8px; margin-bottom: 20px; text-align: center; max-width: 300px">
+              Kamu sudah menggunakan promo code kamu
+            </div>
           `;
-          promoBox.style.display = 'block';
-          localStorage.setItem('promoUsed', 'true');
-        } else {
-          messageBox.innerText = data.error || 'Gagal membuat kode promo.';
-          messageBox.style.display = 'block';
+          return;
         }
-      } catch (err) {
-        console.error(err);
-        loadingBox.style.display = 'none';
-        messageBox.innerText = 'Terjadi kesalahan saat membuat promo code.';
-        messageBox.style.display = 'block';
+
+        output.innerHTML = `
+          <div style="margin-bottom: 20px; padding: 14px 20px; border: 1px solid white; border-radius: 16px; font-size: 18px; text-align: center; background-color: transparent; display: flex; align-items: center;">
+            <div class="spinner">
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+            Loading Please Wait
+          </div>
+        `;
+
+        try {
+          const res = await fetch('/api/generate-promo');
+          const data = await res.json();
+
+          if (data.code) {
+            localStorage.setItem('promoUsed', 'true');
+            output.innerHTML = `
+              <div style="margin-bottom: 20px; padding: 14px 20px; border: 1px solid white; border-radius: 16px; font-size: 20px; letter-spacing: 2px; text-align: center; width: max-content; background-color: transparent;">
+                ${data.code}
+                <div style="margin-top: 10px;">
+                  <button onclick="copyCode('${data.code}')" style="padding: 10px 20px; font-size: 14px; background-color: #3a3a3a; color: white; border: none; border-radius: 12px; cursor: pointer;">
+                    Copy
+                  </button>
+                </div>
+              </div>
+            `;
+          } else {
+            output.innerHTML = `
+              <div style="background-color: #f44336; color: white; padding: 10px 20px; border-radius: 8px; margin-bottom: 20px; text-align: center; max-width: 300px">
+                ${data.error || 'Gagal membuat kode promo.'}
+              </div>
+            `;
+          }
+        } catch (e) {
+          console.error(e);
+          output.innerHTML = `
+            <div style="background-color: #f44336; color: white; padding: 10px 20px; border-radius: 8px; margin-bottom: 20px; text-align: center; max-width: 300px">
+              Terjadi kesalahan saat membuat promo code.
+            </div>
+          `;
+        }
+      });
+
+      function copyCode(code) {
+        navigator.clipboard.writeText(code);
+        alert('Kode berhasil disalin!');
       }
-    });
 
-    function copyCode() {
-      navigator.clipboard.writeText(promoCode);
-      alert('Kode berhasil disalin!');
-    }
+      function handleContact() {
+        window.open('https://wa.me/601160643471', '_blank');
+      }
 
-    contactBtn.addEventListener('click', () => {
-      window.open('https://wa.me/601160643471', '_blank');
-    });
-
-    homeBtn.addEventListener('click', () => {
-      window.location.href = '/';
-    });
-  </script>
-</body>
+      function handleBackToHome() {
+        window.location.href = '/';
+      }
+    </script>
+  </body>
 </html>
